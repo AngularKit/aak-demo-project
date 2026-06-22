@@ -1,0 +1,53 @@
+/* Minimal global styles — zero styling effort by design (it's a legacy demo). */
+body {
+  font-family: system-ui, sans-serif;
+  margin: 2rem;
+  color: #222;
+}
+
+.app h1 {
+  margin-top: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filters button.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.content {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.task-list ul {
+  list-style: none;
+  padding: 0;
+  min-width: 22rem;
+}
+
+.task-list li {
+  display: flex;
+  gap: 1rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ddd;
+  margin-bottom: 0.3rem;
+  cursor: pointer;
+}
+
+.task-list li.done .title {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.task-list .status,
+.task-list .assignee {
+  color: #666;
+  font-size: 0.85rem;
+}

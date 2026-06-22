@@ -1,0 +1,28 @@
+<!-- Legacy template: async pipe everywhere, *ngFor without track for filters. -->
+<main class="app">
+  <h1>TaskFlow</h1>
+
+  <nav class="filters">
+    <button (click)="setFilter('all')" [class.active]="(filter$ | async) === 'all'">
+      All
+    </button>
+    <button
+      *ngFor="let status of statuses"
+      (click)="setFilter(status)"
+      [class.active]="(filter$ | async) === status"
+    >
+      {{ status }}
+    </button>
+  </nav>
+
+  <p *ngIf="loading$ | async">Loading from the store...</p>
+
+  <section class="content">
+    <app-task-list
+      [tasks]="(filteredTasks$ | async) || []"
+      (select)="onSelect($event)"
+    ></app-task-list>
+
+    <app-task-detail [task]="selectedTask$ | async"></app-task-detail>
+  </section>
+</main>
