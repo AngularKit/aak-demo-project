@@ -1,53 +1,265 @@
-/* Minimal global styles — zero styling effort by design (it's a legacy demo). */
+/* ------------------------------------------------------------------ *
+ * TaskFlow — global theme.
+ * Tout est ici : aucun template ni composant n'est touché. Démonstration
+ * qu'un repo legacy peut être relooké uniquement par le CSS global.
+ * ------------------------------------------------------------------ */
+
+:root {
+  --bg: #0f172a;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+  --accent: #6366f1;
+  --accent-soft: #eef2ff;
+  --accent-strong: #4f46e5;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.25);
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: system-ui, sans-serif;
-  margin: 2rem;
-  color: #222;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background: radial-gradient(120% 120% at 0% 0%, #eef2ff 0%, #f8fafc 40%, #f1f5f9 100%);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Shell ---- */
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
 }
 
 .app h1 {
-  margin-top: 0;
+  margin: 0 0 1.5rem;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent-strong), #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
+.app h1::before {
+  content: '✓';
+  display: inline-grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  margin-right: 0.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  vertical-align: middle;
+  -webkit-text-fill-color: #fff;
+}
+
+/* ---- Filters ---- */
 .filters {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.filters button {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filters button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  transform: translateY(-1px);
 }
 
 .filters button.active {
-  font-weight: bold;
-  text-decoration: underline;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 16px -6px var(--accent);
 }
 
+/* ---- Layout ---- */
 .content {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+app-task-list,
+app-task-detail {
+  display: block;
+}
+
+/* ---- Task list ---- */
+.task-list input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-list input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .task-list ul {
   list-style: none;
   padding: 0;
-  min-width: 22rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .task-list li {
   display: flex;
-  gap: 1rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #ddd;
-  margin-bottom: 0.3rem;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-list li:hover {
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 14px 30px -16px rgba(79, 70, 229, 0.5);
+}
+
+.task-list li .title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .task-list li.done .title {
   text-decoration: line-through;
-  color: #888;
+  color: var(--muted);
 }
 
-.task-list .status,
+/* Status pill */
+.task-list .status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+.task-list li.done .status {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Assignee chip */
 .task-list .assignee {
-  color: #666;
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.task-list .assignee::before {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #c084fc);
+}
+
+.task-list > p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 1rem;
+}
+
+/* ---- Detail panel ---- */
+.task-detail,
+app-task-detail > p {
+  position: sticky;
+  top: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+app-task-detail > p {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.task-detail h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.task-detail dl {
+  margin: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.task-detail dt {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.task-detail dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: capitalize;
 }
