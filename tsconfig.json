@@ -10,6 +10,11 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    // Legacy v15 setting — parameter properties are assigned before field
+    // initializers, which is what makes the classic NgRx `createEffect` field
+    // pattern (referencing `this.actions$`) work. The modern default (true)
+    // would leave `this.actions$` undefined at field-init time → blank page.
+    "useDefineForClassFields": false,
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve"

@@ -1,11 +1,11 @@
 <!-- Legacy template: *ngIf with an else template. -->
-<div class="task-detail" *ngIf="task; else empty">
-  <h2>{{ task.title }}</h2>
+<div class="task-detail" *ngIf="task as t; else empty">
+  <h2>{{ t.title }}</h2>
   <dl>
     <dt>Status</dt>
-    <dd>{{ task.status }}</dd>
+    <dd>{{ t.status }}</dd>
     <dt>Assignee</dt>
-    <dd>{{ task.assignee }}</dd>
+    <dd>{{ t.assignee }}</dd>
   </dl>
 </div>
 
