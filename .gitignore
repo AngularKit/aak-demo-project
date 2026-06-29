@@ -42,3 +42,11 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# AAK — code propriétaire des agents : NE PAS pousser (dépôt public).
+# Vendoré en local par /aak-init-profile & /aak-sync pour les sessions cloud
+# d'un dépôt PRIVÉ uniquement. Le profil-projet et la version restent suivis.
+.claude/agents/
+.claude/skills/
+.claude/commands/
+.claude/eslint/
