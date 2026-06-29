@@ -356,3 +356,50 @@ absent. L'échec est un défaut de **module applicatif manquant** (scaffold GREE
 **pas** une erreur de harnais (zone/DI/setup) ni un faux vert : la suite
 n'exerce que des assertions comportementales neuves, qui ne pourront passer
 qu'une fois `TaskList` implémenté conformément au plan.
+
+## Verify
+
+**Verify runtime exécuté par `code-reviewer`** le 2026-06-29 (la spec n'en
+portait aucune preuve). App lancée via `pnpm exec ng serve` (port 4321),
+observée headless (Chrome 149, CDP — extension navigateur indisponible).
+
+**Steps & résultats** (`http://localhost:4321/`) :
+
+1. **Rendu initial** — 6 boutons de tâche rendus, 6 titres corrects, search box
+   présente, panneau détail = « Select a task to see its details. ». Capture du
+   rendu prise (liste + filtres + détail), styling intact (le `<li>→<button>`
+   ne casse pas le CSS global ; tâche « done » bien barrée via `[class.done]`).
+2. **Filtre par assigné** `bob` (insensible casse) — 6 → 2 items (« Write the
+   onboarding documentation », « Wire up the detail panel »). ✅
+3. **Filtre vidé** — restaure 6 items. ✅
+4. **Aucune correspondance** `zzzzzz` — 0 item + bloc `@empty` affiche
+   « No tasks match. ». ✅
+5. **Sélection** — clic sur le 1ᵉʳ item : le panneau détail passe de
+   « Select a task… » à « Set up the project repository / Status done /
+   Assignee Alice ». L'output `(selected)` → dispatch store → `app-task-detail`
+   fonctionne de bout en bout. ✅
+
+**Console** : propre — 0 erreur, 0 warning. Seuls messages : Vite dev (connect)
+et « Angular is running in development mode ». Aucun `console.log` résiduel du
+setter (F005 confirmé retiré au runtime).
+
+**Verdict verify** : **PASS**.
+
+## Review code
+
+**Verdict** : APPROVED
+**Gates CI locaux** : tests ✅ (`pnpm test` → exit 0, **11 passed / 11**, typecheck specs inclus via `tsconfig.spec.json`) / lint ✅ sur la surface `task-list` (`pnpm lint` → exit 1, mais **les 7 erreurs sont 100 % hors scope**, axes 2/3 : `app.component.{ts,html}`, `task-detail.component.{ts,html}`, `task.effects.ts` — **zéro** sur `task-list.{ts,html,spec.ts}`, `task.builder.ts`, `app.module.ts` ; conforme au contrat de gate de la spec) / build ✅ (`pnpm build` → exit 0, bundle prod, aucun warning)
+**Warnings de gate** : aucun nouveau induit par le diff. Les 7 erreurs lint sont (b) pré-existantes hors diff (smells legacy axes 2/3, attendues par profil + spec) — informatif, non bloquant.
+**Rendu compilé** : N/A (composant à sélecteur élément `app-task-list`, encapsulation Emulated standard ; rendu validé en runtime ci-dessous plutôt qu'au grep de bundle)
+**Preuve de verify runtime** : ✅ (exécutée par le reviewer, section `## Verify` — PASS + console propre : rendu, filtre titre/assigné, sélection→détail, bloc `@empty`)
+**Conventions Angular 20+** : ✅ (standalone, `OnPush` explicite, `input()`/`output()` `selected`, `signal()`/`computed()`, `viewChild()`, control flow `@if`/`@for`+`track`/`@empty`, `<button type="button">` a11y natif ; pas d'`inject()` car plus aucune dépendance injectée — conforme Décision 2 ; naming v22 classe `TaskList`, fichiers sans suffixe `.component.` ; pas d'`export default` ; pas d'alias nu ; pas d'export sans consommateur — `aTask` consommé par la spec)
+**Cross-platform** : N/A (profil : aucun)
+**Tests** : ✅ (builder `aTask` utilisé partout, aucun littéral de domaine en entrée ; pas de `getByTestId`/snapshot/`it.only`/tautologie ; pas de helpers zone `fakeAsync`/`waitForAsync` — cohérent zone.js + absence de timer ; `it.each` non requis, cas nominaux distincts ; golden path + edge cases du plan couverts)
+**Sécurité** : ✅ (pas de secret, pas d'`innerHTML`/`bypassSecurityTrust`, pas de `console.log` résiduel — F005 retiré et confirmé runtime)
+**Alignement spec** : ✅ (table « Fichiers » tenue : `task-list.component.ts/.html` supprimés via renommage, `task-list.ts/.html` créés, `TaskList` retiré de `declarations` → `imports` d'`AppModule`, `providers: [TaskService]` **conservé** conforme Décision 2, binding `(select)`→`(selected)` dans `app.component.html` ; les 11 tests du `## Plan de test` présents et verts ; aucun fichier hors plan)
+
+**Tests notables** :
+- ✨ `task-list.spec.ts:18-25` — pilotage du champ via `input.value` + `dispatchEvent(new Event('input'))` (pas appel direct du handler) : teste le câblage `viewChild`/`onSearch` réel, résistant au refacto interne.
+- ✨ `task-list.spec.ts:138-154` — « emits matching task after filtering » : assert que le clic post-filtre émet la **bonne** `Task` (pas l'index brut), couvre la régression d'indexation filtré/non-filtré.
+
+Verdict global : APPROVED, 0 point bloquant, gates vertes sur la surface mandatée, verify runtime PASS.

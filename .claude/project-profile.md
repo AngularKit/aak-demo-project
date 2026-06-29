@@ -92,7 +92,15 @@
 
 ## Tests
 
-- **Framework** : `Vitest` (builder `@angular/build:unit-test`, env `jsdom`).
+- **Framework** : `Vitest` (builder `@angular/build:unit-test`, env `jsdom`) +
+  **`@testing-library/angular`** (`render`/`screen`, requêtes par rôle/texte) avec
+  **`@testing-library/user-event`** pour les interactions (saisie, clic, clavier).
+  Matchers `@testing-library/jest-dom` enregistrés via `src/test-setup.ts`
+  (câblé en `setupFiles` dans `angular.json`, inclus dans `tsconfig.spec.json`).
+  **Doctrine** : tester par le comportement observable (rôles accessibles, texte
+  rendu, sorties émises), pas les détails d'implémentation ; `userEvent` plutôt que
+  des events DOM bruts. `TestBed` natif reste permis pour le non-composant (sélecteurs,
+  reducers, effects purs).
 - **Régime zone** : `zone.js` — **présent** dans les dépendances. `fakeAsync` /
   `tick` / `waitForAsync` **autorisés** en spec (patches zone disponibles via le
   polyfill `zone.js`). Voir aussi le skill `angular-async-testing`.
