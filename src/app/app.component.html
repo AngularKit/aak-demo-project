@@ -20,7 +20,7 @@
   <section class="content">
     <app-task-list
       [tasks]="(filteredTasks$ | async) || []"
-      (select)="onSelect($event)"
+      (selected)="onSelect($event)"
     ></app-task-list>
 
     <app-task-detail [task]="selectedTask$ | async"></app-task-detail>

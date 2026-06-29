@@ -6,7 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent } from './app.component';
 import { TaskService } from './tasks/task.service';
 import { TaskDetailComponent } from './tasks/task-detail/task-detail.component';
-import { TaskListComponent } from './tasks/task-list/task-list.component';
+import { TaskList } from './tasks/task-list/task-list';
 import { TaskEffects } from './tasks/store/task.effects';
 import { TASK_FEATURE_KEY, taskReducer } from './tasks/store/task.reducer';
 
@@ -15,11 +15,12 @@ import { TASK_FEATURE_KEY, taskReducer } from './tasks/store/task.reducer';
 //  - classic NgRx wired with StoreModule.forRoot + EffectsModule.forRoot
 //  - TaskService provided at the module level
 @NgModule({
-  declarations: [AppComponent, TaskListComponent, TaskDetailComponent],
+  declarations: [AppComponent, TaskDetailComponent],
   imports: [
     BrowserModule,
     StoreModule.forRoot({ [TASK_FEATURE_KEY]: taskReducer }),
     EffectsModule.forRoot([TaskEffects]),
+    TaskList,
   ],
   providers: [TaskService],
   bootstrap: [AppComponent],

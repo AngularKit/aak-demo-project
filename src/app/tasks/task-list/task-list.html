@@ -1,0 +1,17 @@
+<div class="task-list">
+  <input #search type="text" placeholder="Search tasks..." (input)="onSearch()" />
+
+  <ul>
+    @for (task of filteredTasks(); track task.id) {
+      <li [class.done]="task.status === 'done'">
+        <button type="button" (click)="onSelect(task)">
+          <span class="title">{{ task.title }}</span>
+          <span class="status">{{ task.status }}</span>
+          <span class="assignee">{{ task.assignee }}</span>
+        </button>
+      </li>
+    } @empty {
+      <li class="empty">No tasks match.</li>
+    }
+  </ul>
+</div>
